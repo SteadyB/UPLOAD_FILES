@@ -14,17 +14,23 @@
 <body>
     <section class="container-fluid">
         <div class="jumbotron bg-info text-light mb-0">
+
             <div class="row text-center">
                 <div class="col-12 m-0">
-                    <a class="text-light" role="..." href="https://www.youtube.com/watch?v=biYdUZXfz9I"><h1>LAISSE PAS TRAÎNER TON FILE</h1></a>
+                    <a class="text-light" role="..." href="https://www.youtube.com/watch?v=biYdUZXfz9I"><h1>LAISSE PAS TRAÎNER TON FILE.</h1></a>
                 </div>
                 <div class="col-12">
-                    <h5>Stock le ici</h5>
+                    <h3>Stock le ici.</h3>
                 </div>
             </div>
-            <div class="row text-center mt-5 mb-0">
-                <div class="col-xl-12 col">
-                    <h3 class="text-warning"><?php require '../src/functions.php'; ?></h3>
+            <div class="row text-center">
+                <div class="col-12 mt-4 text-warning" style="font-size:5em;">
+                    <i class="far fa-images"></i> <i class="fas fa-angle-double-right mx-5"></i> <i class="fas fa-file-archive"></i>
+                </div>
+            </div>
+            <div class="row justify-content-center text-center mt-5 mb-0">
+                <div class="col-xl-auto col-auto">
+                    <h3 class="text-secondary bg-light rounded p-2"><?php require '../src/functions.php'; ?></h3>
                 </div>
             </div>
         </div>
@@ -32,7 +38,7 @@
             <form action="" method="post" enctype="multipart/form-data"><!--TODO https://getbootstrap.com/docs/4.0/components/input-group/#custom-forms-->
                 <div class="row justify-content-center">
                     <div class="col-auto">
-                        <small id="fileHelpId" class=" col-form-label-sm form-text text-muted my-3"> .jpg ou jpeg, .png ou .gif uniquement. Maximum 1Mo par fichier. </small>
+                        <small id="fileHelpId" class=" col-form-label-sm form-text text-muted my-3"> .jpg ou .jpeg, .png ou .gif uniquement. Maximum 1Mo par fichier. </small>
                     </div>
                 </div>
                 <div class="form-inline justify-content-center">

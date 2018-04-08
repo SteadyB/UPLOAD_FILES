@@ -24,6 +24,9 @@ $currentWorkDir = getcwd();
 $storageDirectory = "/Storage/";
 $uploadPath = $currentWorkDir . $storageDirectory . basename($fileName); // upload file path
 
+if(empty($_POST)){
+    echo "Pret a uploader !";
+}
 /* treatment TODO : make function and enhance error and message*/
 if (!empty($_POST['submit'])) {
     if (!in_array($fileExtension,$fileExtensions)) {
@@ -35,7 +38,7 @@ if (!empty($_POST['submit'])) {
     if (empty($fileERR)) {
         $upload = move_uploaded_file($fileTemporaryName, $uploadPath);
         if ($upload) {
-            echo "<i class=\"fas fa-check-circle\"></i> " . "Le fichier " . basename($fileName) . " a bien été uploader";//really ugly , sorry TODO : ride out HTML
+            echo "<i class=\"fas fa-check-circle\"></i> " . "Le fichier " . basename($fileName) . " a bien été uploadé.";//really ugly , sorry TODO : ride out HTML
         } else {
             echo "<i class=\"fas fa-exclamation-circle\"></i> " . "une erreur s'est produite. le fichier n'a pas été uploader veuillez recommencer.";//really ugly , sorry TODO : ride out HTML
         }
