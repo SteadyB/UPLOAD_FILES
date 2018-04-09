@@ -3,10 +3,5 @@
  * Created by PhpStorm.
  * User: workstation
  * Date: 08/04/18
- * Time: 09:54
+ * Time: 18:33
  */
-
-class upload
-{
-
-}
