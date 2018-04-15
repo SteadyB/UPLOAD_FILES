@@ -1,50 +1,87 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: workstation
- * Date: 03/04/18
- * Time: 19:05
- */
 
-/* init errors needs */
-$fileExtensions = ['jpeg','jpg','png','gif'];
-$fileERR = [];
+function sizeValidator(array $files): array
+{
+    $maxSize = 100000;
+    $numberOfFiles = count($files['files']['name']);
+    $sizeERR = [];
 
-/* init file infos */
-$fileName = $fileSize = $fileTemporaryName  = $fileType = $fileExtension = '';
-if (!empty($_FILES)){
-    $fileName = $_FILES['file']['name'];
-    $fileSize = $_FILES['file']['size'];
-    $fileTemporaryName  = $_FILES['file']['tmp_name'];
-    $fileType = $_FILES['file']['type'];
-    $fileExtension  = pathinfo($fileName, PATHINFO_EXTENSION);
-}
-/* init storage path */
-$currentWorkDir = getcwd();
-$storageDirectory = "/Storage/";
-$uploadPath = $currentWorkDir . $storageDirectory . basename($fileName); // upload file path
-
-if(empty($_POST)){
-    echo "Pret a uploader !";
-}
-/* treatment TODO : make function and enhance error and message*/
-if (!empty($_POST['submit'])) {
-    if (!in_array($fileExtension,$fileExtensions)) {
-        $fileERR[] = "Extension non prise en charge. Veuillez utiliser uniquement les suivantes : .jpg ou .jpeg ; .png ou .gif , merci.";
-    }
-    if ($fileSize > 1000000) {
-        $fileERR[] = "fichier trop volumineux. MAXIMUM 1Mo.";
-    }
-    if (empty($fileERR)) {
-        $upload = move_uploaded_file($fileTemporaryName, $uploadPath);
-        if ($upload) {
-            echo "<i class=\"fas fa-check-circle\"></i> " . "Le fichier " . basename($fileName) . " a bien été uploadé.";//really ugly , sorry TODO : ride out HTML
-        } else {
-            echo "<i class=\"fas fa-exclamation-circle\"></i> " . "une erreur s'est produite. le fichier n'a pas été uploader veuillez recommencer.";//really ugly , sorry TODO : ride out HTML
-        }
-    } else {
-        foreach ($fileERR as $error) {
-            echo "erreur  : " . $error . "\n";
+    for ($i = 0; $i < $numberOfFiles; $i++) {
+        $fileSize = $files['files']['size'][$i];
+        if ($fileSize > $maxSize) {
+            $sizeERR[$i] = $files['files']['name'][$i];
+            unset($files['files']['name'][$i], $files['files']['type'][$i], $files['files']['tmp_name'][$i], $files['files']['size'][$i], $files['files']['error'][$i]);
         }
     }
+    $files['files']['name'] = array_values($files['files']['name']);
+    $files['files']['type'] = array_values($files['files']['type']);
+    $files['files']['tmp_name'] = array_values($files['files']['tmp_name']);
+    $files['files']['size'] = array_values($files['files']['size']);
+    $files['files']['size'] = array_values($files['files']['error']);
+    $_FILES = $files;
+    return $sizeERR;
 }
+
+//////////////
+
+function mimeValidator(array $files): array
+{
+    $allowedTypes = ['image/jpeg','image/jpg','image/png','image/gif'];
+    $numberOfFiles = count($files['files']['name']);
+    $typeERR = [];
+
+    for ($i = 0; $i < $numberOfFiles; $i++) {
+        $fileType = mime_content_type($files['files']['tmp_name'][$i]);
+        if (!in_array($fileType, $allowedTypes)) {
+            $typeERR[$i] = $files['files']['name'][$i];
+            unset($files['files']['name'][$i], $files['files']['type'][$i], $files['files']['tmp_name'][$i], $files['files']['size'][$i], $files['files']['error'][$i]);
+        }
+    }
+    $files['files']['name'] = array_values($files['files']['name']);
+    $files['files']['type'] = array_values($files['files']['type']);
+    $files['files']['tmp_name'] = array_values($files['files']['tmp_name']);
+    $files['files']['size'] = array_values($files['files']['size']);
+    $files['files']['size'] = array_values($files['files']['error']);
+    $_FILES = $files;
+    return$typeERR;
+}
+
+//////////////
+
+function upload(array $files, string $uploadPath): void
+{
+    $numberOfFiles = count($files['files']['name']);
+
+    for ($i = 0; $i < $numberOfFiles; $i++) {
+            $fileNameTMP = $files['files']['tmp_name'][$i];
+            $fileName = "image" . uniqid() . "." . pathinfo($files['files']['name'][$i], PATHINFO_EXTENSION);
+            move_uploaded_file($fileNameTMP, "$uploadPath/$fileName");
+        }
+}
+
+//////////////
+
+function unlinkImage(string $uploadPath, string $filesname)//TODO need improvement
+{
+    $fileToDelete = $uploadPath . $filesname;
+    if(is_file($fileToDelete)){
+        unlink($fileToDelete);
+    }else{
+        echo "sorry, " . $_POST['delete'] . " has not been found.";
+    }
+}
+
+//////////////
+
+function unlinkAll(string $uploadPath, array $allFiles): void
+{
+    foreach($allFiles as $files){
+        $fileToDelete = $uploadPath . $files;
+        unlink($fileToDelete);
+        if(is_file($fileToDelete)){
+            unlink($fileToDelete);
+        }
+    }
+}
+
+//////////////

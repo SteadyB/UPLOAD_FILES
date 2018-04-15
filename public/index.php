@@ -1,5 +1,4 @@
 <?php
-var_dump($_FILES);
 ?>
 
 <!doctype html >
@@ -15,7 +14,7 @@ var_dump($_FILES);
 <body>
     <section class="container-fluid">
         <!--JUMBOTRON HEADER-->
-        <div class="jumbotron bg-info text-light mb-0">
+        <div class="jumbotron bg-info text-light mb-0 mt-3">
             <div class="row text-center">
                 <div class="col-12 m-0">
                     <a class="text-light" role="..." href="https://www.youtube.com/watch?v=biYdUZXfz9I"><h1>LAISSE PAS TRAÎNER TON FILE.</h1></a>
@@ -31,7 +30,7 @@ var_dump($_FILES);
             </div>
             <div class="row justify-content-center text-center mt-5 mb-0">
                 <div class="col-xl-auto col-auto">
-                    <h3 class="text-secondary bg-light rounded p-2"><?php require '../src/upload.php'; ?></h3>
+                    <h3 class="text-secondary bg-light rounded p-3"><?php require '../src/upload.php'; ?></h3>
                 </div>
             </div>
         </div>
@@ -45,40 +44,53 @@ var_dump($_FILES);
                 </div>
                 <div class="form-inline justify-content-center">
                     <label class="col-xl-auto col-auto px-0 sr-only" for="upload">Upload de fichier</label>
-                    <input type="file" class="col-xl-12 col-12 py-2 px-4 btn rounded form-control-file bg-warning" name="files[]" id="upload" placeholder="" aria-describedby="fileHelpId" multiple />
+                    <input type="file" class="col-xl-12 col-12 py-2 px-4 btn btn-lg rounded form-control-file bg-warning" name="files[]" id="upload" placeholder="" aria-describedby="fileHelpId" multiple />
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-auto m-3">
-                        <input class="btn btn-info text-light font-weight-bold" type="submit" value="Envoyer" name="submit" />
+                        <input class="btn btn-info btn-lg text-light font-weight-bold" type="submit" value="Envoyer" name="submit" />
                     </div>
                 </div>
             </form>
         </section>
         <!--UPLOADED FILES GALLERY-->
-        <section class="container-fluid">
+        <?php $path = new FilesystemIterator($uploadPath);
+        if(in_array(pathinfo($gallery->getFilename(), PATHINFO_EXTENSION), $allowedExtensions)): ?>
+        <section class="container-fluid mx-auto py-3 mt-3 mb-5 bg-dark rounded">
             <div class="row text-center">
-                <div class="col m-5">
-                    <h3>APERCU DES IMAGES</h3>
+
+                <div class="col m-3 text-light">
+                    <h3>APERÇU DES IMAGES</h3>
                 </div>
             </div>
-            <div class="row">
-                <?php $gallery = new FilesystemIterator($storageDirectory);
-                foreach($gallery as $image): ?>
-                <div class="card col-3 pl-5 pr-0 border-0 " style="min-height: 300px;">
-                    <img class="card-img-top" style="min-height: 200px; max-width: 200px;" src="<?php echo $storageDirectory . $image->getFilename(); ?>" alt="Card image cap">
-                    <div class="card-body">
-                        <p class="card-title"><?php echo $image->getFilename();?></p>
-                        <button type="submit" name="delete" class="btn btn-danger">Supprimer</button>
-                    </div>
-                </div>
-                <?php endforeach; ?>
+            <?php endif; ?>
+            <div class="row justify-content-center mx-auto mb-3">
+                <?php foreach($path as $gallery):
+                    if(in_array(pathinfo($gallery->getFilename(), PATHINFO_EXTENSION), $allowedExtensions)): ?>
+                        <div class="col-3">
+                            <div class="card bg-info p-3 pr-0 border-0 ml-2 mb-5 text-light" style="min-height: 350px;">
+                                <img class="card-img-top img-responsive" style="max-height: 355px; max-width: 200px;" src="<?php echo $storageDirectory . $gallery->getFilename(); ?>" alt="Card image cap">
+                                <div class="card-body">
+                                    <p class="card-title"><?php echo $gallery->getFilename();?></p>
+                                    <form action="" method="post">
+                                        <button type="submit" name="delete" class="btn btn-danger align-self-end" value="<?php echo $gallery->getFilename();?>">Supprimer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif;
+                endforeach; ?>
+            </div>
+            <?php if(!in_array(pathinfo($gallery->getFilename(), PATHINFO_EXTENSION), $allowedzip=['zip']) && in_array(pathinfo($gallery->getFilename(), PATHINFO_EXTENSION), $allowedExtensions)): ?>
+            <div class="row justify-content-center p-2 pb-2 mb-3">
+                <form action="" method="post">
+                    <button type="submit" name="zip" class="btn btn-lg btn-outline-info" value="ZipItNow"><i class="fas fa-file-archive"></i> <strong>Compresser les images</strong></button>
+                </form>
             </div>
         </section>
+        <?php endif;?>
         <!--TODO ZIP GALLERY FILES-->
-        <section class="container-fluid">
-            <div class="row">
-            </div>
-        </section>
+
     </section>
 
 <script src = "https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
