@@ -5,7 +5,7 @@
 $sizeERR = $typeERR = [];
 $allowedExtensions = ['jpeg', 'jpg', 'png', 'gif'];
 $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-$maxSize = 100000;
+$maxSize = 1000000;
 /////////////////////
 
 // init storage path //
